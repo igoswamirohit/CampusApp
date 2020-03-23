@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="Department">
+        <item>CSE</item>
+        <item>Mech</item>
+        <item>Civil</item>
+        <item>Electrical</item>
+    </string-array>
+
+    <string-array name="Semester">
+        <item>Sem1</item>
+        <item>Sem2</item>
+        <item>Sem 3</item>
+        <item>Sem 4</item>
+        <item>Sem 5</item>
+        <item>Sem 6</item>
+        <item>Sem 7</item>
+        <item>Sem 8</item>
+    </string-array>
+
+    <string-array name="Lecture">
+        <item>Lecture 1</item>
+        <item>Lecture 2</item>
+        <item>Lecture 3</item>
+        <item>Lecture 4</item>
+        <item>Lecture 5</item>
+        <item>Lecture 6</item>
+    </string-array>
+</resources>

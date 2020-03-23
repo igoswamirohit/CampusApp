@@ -1,0 +1,7 @@
+include ':internal:chooserx'
+include ':auth2'
+include ':internal:lint'
+include ':internal:lintchecks'
+include ':auth'
+include ':app'
+rootProject.name = "data"
