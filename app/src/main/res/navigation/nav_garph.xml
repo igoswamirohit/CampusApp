@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_garph"
+    app:startDestination="@id/signInFragment">
+    <fragment
+        android:id="@+id/mainFragment"
+        android:name="com.ruds.data.MainFragment"
+        android:label="fragment_main"
+        tools:layout="@layout/fragment_main">
+        <action
+            android:id="@+id/action_mainFragment_to_attendanceListFragment"
+            app:destination="@id/attendanceListFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/signInFragment"
+        android:name="com.ruds.data.SignInFragment"
+        android:label="fragment_sign_in"
+        tools:layout="@layout/fragment_sign_in">
+        <action
+            android:id="@+id/action_signInFragment_to_mainFragment2"
+            app:destination="@id/mainFragment"
+            app:popUpTo="@id/signInFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_signInFragment_to_signUpFragment"
+            app:destination="@id/signUpFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/attendanceListFragment"
+        android:name="com.ruds.data.AttendanceListFragment"
+        android:label="fragment_attendance_list"
+        tools:layout="@layout/fragment_attendance_list">
+        <argument
+            android:name="Department"
+            android:defaultValue="None" />
+        <argument
+            android:name="Semester"
+            android:defaultValue="None" />
+        <argument
+            android:name="Lecture"
+            android:defaultValue="None" />
+    </fragment>
+    <fragment
+        android:id="@+id/signUpFragment"
+        android:name="com.ruds.data.SignUpFragment"
+        android:label="fragment_sign_up"
+        tools:layout="@layout/fragment_sign_up">
+        <action
+            android:id="@+id/action_signUpFragment_to_choosePasswordFragment2"
+            app:destination="@id/choosePasswordFragment2" />
+    </fragment>
+    <fragment
+        android:id="@+id/choosePasswordFragment2"
+        android:name="com.ruds.data.ChoosePasswordFragment"
+        android:label="fragment_choose_password"
+        tools:layout="@layout/fragment_choose_password">
+        <action
+            android:id="@+id/action_choosePasswordFragment2_to_signInFragment"
+            app:destination="@id/signInFragment"
+            app:popUpTo="@id/signInFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+</navigation>
