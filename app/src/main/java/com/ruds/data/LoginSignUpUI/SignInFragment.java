@@ -1,4 +1,4 @@
-package com.ruds.data;
+package com.ruds.data.LoginSignUpUI;
 
 import android.os.Bundle;
 
@@ -30,6 +30,7 @@ import com.google.android.material.textview.MaterialTextView;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.ruds.data.R;
 
 public class SignInFragment extends Fragment {
 

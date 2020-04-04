@@ -1,4 +1,4 @@
-package com.ruds.data;
+package com.ruds.data.LoginSignUpUI;
 
 import android.os.Bundle;
 
@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +19,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
@@ -26,7 +28,13 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.ruds.data.R;
 import com.ruds.data.models.Students;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class ChoosePasswordFragment extends Fragment {
 
@@ -40,6 +48,8 @@ public class ChoosePasswordFragment extends Fragment {
 
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
     FirebaseUser mUser = mAuth.getCurrentUser();
+    FirebaseDatabase database = FirebaseDatabase.getInstance();
+    DatabaseReference databaseReference = database.getReference();
 
     public ChoosePasswordFragment() {
         // Required empty public constructor
@@ -87,12 +97,17 @@ public class ChoosePasswordFragment extends Fragment {
             public void onClick(View v) {
                 password = pwd.getText().toString();
                 conpassword = cnfpwd.getText().toString();
-                if (password.equals(conpassword)) {
-                    studentsViewModel.setPassword(pwd.getText().toString());
-                    signUp();
+                if (pwd.equals("") && cnfpwd.equals("")) {
+                    pwdlayout.setError("Please Insert Something");
+                    cnflayout.setError("Please Insert Something");
                 } else {
-                    pwdlayout.setError("Password Does not match");
-                    cnflayout.setError("Password Does not match");
+                    if (password.equals(conpassword)) {
+                        studentsViewModel.setPassword(pwd.getText().toString());
+                        signUp();
+                    } else {
+                        pwdlayout.setError("Password Does not match");
+                        cnflayout.setError("Password Does not match");
+                    }
                 }
             }
         });
@@ -110,10 +125,11 @@ public class ChoosePasswordFragment extends Fragment {
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
                     Log.d("ChoosePasswordSuccess", "createUserWithEmail:success");
-                    sendVerificationEmail();
-                } else {
-                    Log.w("ChoosePasswordError", "createUserWithEmail:failure", task.getException());
-                    return;
+                    mAuth = FirebaseAuth.getInstance();
+                    mUser = mAuth.getCurrentUser();
+                    studentsViewModel.setUid(mUser.getUid());
+                    String uid = mUser.getUid();
+                    sendVerificationEmail(uid);
                 }
             }
         }).addOnFailureListener(getActivity(), new OnFailureListener() {
@@ -127,7 +143,7 @@ public class ChoosePasswordFragment extends Fragment {
         });
     }
 
-    public void sendVerificationEmail() {
+    public void sendVerificationEmail(final String UID) {
         mAuth = FirebaseAuth.getInstance();
         mUser = mAuth.getCurrentUser();
         mUser.sendEmailVerification()
@@ -136,6 +152,7 @@ public class ChoosePasswordFragment extends Fragment {
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
                             UpdateUI();
+                            addDataToDatabase(UID);
                         }
                     }
                 }).addOnFailureListener(getActivity(), new OnFailureListener() {
@@ -148,8 +165,6 @@ public class ChoosePasswordFragment extends Fragment {
     }
 
     private void UpdateUI() {
-        mAuth = FirebaseAuth.getInstance();
-        mUser = mAuth.getCurrentUser();
         Log.d("Sent Email", "Email sent.");
         Snackbar.make(getView(), "Verification Email has sent.", 7000).show();
         textView.setText("Verification Email has been sent to your Email address, Kindly Verify and then Login");
@@ -157,22 +172,37 @@ public class ChoosePasswordFragment extends Fragment {
         signUpBtn.setVisibility(View.GONE);
         pwd.setEnabled(false);
         cnfpwd.setEnabled(false);
-        if (!mUser.isEmailVerified()) {
-            mAuth.signOut();
-        }
-        addDataToDatabase();
     }
 
-    private void addDataToDatabase() {
-        mAuth = FirebaseAuth.getInstance();
-        mUser = mAuth.getCurrentUser();
-        studentsViewModel.setUid(mUser.getUid());
-
+    private void addDataToDatabase(String UUID) {
+        databaseReference.child("Students").child(studentsViewModel.getDep()).child(studentsViewModel.getSem()).child(studentsViewModel.getEnroll()).child("uid").setValue(UUID).addOnFailureListener(getActivity(), new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.d("addDataToDatabaseError", e.getMessage());
+                /*Snackbar.make(getView(),e.getMessage(),7000);*/
+            }
+        }).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Log.d("addedtodatabase", "added to database");
+            }
+        });
+        Map<String, Object> postValues = Students.toMap();
+        postValues.put("uid", UUID);
+        Map<String, Object> childUpdates = new HashMap<>();
+        childUpdates.put("/Students/" + studentsViewModel.getDep() + "/" + studentsViewModel.getSem() + "/" + studentsViewModel.getEnroll(), postValues);
+        databaseReference.updateChildren(childUpdates);
     }
 
     private void accountExist() {
         textView.setText("Account already exist, Kindly Login");
         Toast.makeText(getActivity(), "Account already exist, Kindly Login.", Toast.LENGTH_SHORT).show();
-        navController.navigate(R.id.action_choosePasswordFragment2_to_signInFragment);
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                navController.navigate(R.id.action_choosePasswordFragment2_to_signInFragment);
+            }
+        }, 3000);
     }
 }

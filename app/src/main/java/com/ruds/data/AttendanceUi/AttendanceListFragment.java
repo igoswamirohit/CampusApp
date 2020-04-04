@@ -1,4 +1,4 @@
-package com.ruds.data;
+package com.ruds.data.AttendanceUi;
 
 import android.os.Bundle;
 
@@ -16,9 +16,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.SearchView;
-import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
@@ -27,11 +24,11 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.ruds.data.R;
 import com.ruds.data.models.Students;
 import com.ruds.data.viewholder.StudentsViewHolder;
 
 import java.util.ArrayList;
-import java.util.Date;
 
 public class AttendanceListFragment extends Fragment {
 
@@ -46,9 +43,7 @@ public class AttendanceListFragment extends Fragment {
     public static ArrayList<String> studentsArrayList = new ArrayList<String>();
     public static ArrayList<String> removedArrayList = new ArrayList<String>();
 
-    Attendance_model am = new Attendance_model();
     FirebaseDatabase database = FirebaseDatabase.getInstance();
-    DatabaseReference databaseReference = database.getReference("Students/CSE/Sem1");
     DatabaseReference databaseReferenceAttendance = database.getReference();
 
     public AttendanceListFragment() {
@@ -90,8 +85,7 @@ public class AttendanceListFragment extends Fragment {
             submit_btn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    String key = databaseReferenceAttendance.child("Attendance").push().getKey();
-                    Attendance_model attendance_model = new Attendance_model(department, lecture, semester, ajkidate);
+                    //String key = databaseReferenceAttendance.child("Attendance").push().getKey();
 
                     for (String str : studentsArrayList) {
                         //Students std = new Students(str);
@@ -186,7 +180,6 @@ public class AttendanceListFragment extends Fragment {
 
             }
         };
-
         adapter.startListening();
         adapter.notifyDataSetChanged();
         recyclerView.setAdapter(adapter);

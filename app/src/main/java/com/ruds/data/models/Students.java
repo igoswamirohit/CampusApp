@@ -100,7 +100,6 @@ public class Students extends ViewModel {
     @Exclude
     public static Map<String, Object> toMap() {
         HashMap<String, Object> result = new HashMap<>();
-        result.put("uid", uid);
         result.put("fullName", fullName);
         result.put("degree", degree);
         result.put("dep", dep);
