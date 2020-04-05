@@ -39,6 +39,7 @@ public class AttendanceListFragment extends Fragment {
     private RecyclerView.LayoutManager layoutManager;
     private RecyclerView.Adapter mAdapter;
     private CheckBox checkBox;
+    public Long dateLong;
     FirebaseRecyclerAdapter<Students, StudentsViewHolder> adapter;
     public static ArrayList<String> studentsArrayList = new ArrayList<String>();
     public static ArrayList<String> removedArrayList = new ArrayList<String>();
@@ -57,7 +58,7 @@ public class AttendanceListFragment extends Fragment {
             semester = getArguments().getString("Semester");
             department = getArguments().getString("Department");
             lecture = getArguments().getString("Lecture");
-            ajkidate = getArguments().getString("Date");
+            dateLong = getArguments().getLong("Date");
         }
     }
 
@@ -89,7 +90,7 @@ public class AttendanceListFragment extends Fragment {
 
                     for (String str : studentsArrayList) {
                         //Students std = new Students(str);
-                        databaseReferenceAttendance.child("Attendance").child(department).child(semester).child(ajkidate).child(lecture).child(str).setValue("true").addOnSuccessListener(new OnSuccessListener<Void>() {
+                        databaseReferenceAttendance.child("Attendance").child(department).child(semester).child(dateLong.toString()).child(lecture).child(str).setValue("true").addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
                                 Toast.makeText(getContext(), "Successfull", Toast.LENGTH_SHORT).show();

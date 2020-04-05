@@ -41,6 +41,9 @@
         <argument
             android:name="Lecture"
             android:defaultValue="None" />
+        <!--<argument
+            android:name="Date"
+            android:defaultValue="None" />-->
     </fragment>
     <fragment
         android:id="@+id/signUpFragment"

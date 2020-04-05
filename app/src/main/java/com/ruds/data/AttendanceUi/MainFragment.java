@@ -29,6 +29,7 @@ import android.widget.Toast;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
@@ -37,6 +38,9 @@ import com.ruds.data.R;
 import com.ruds.data.models.Students;
 import com.ruds.data.viewholder.StudentsViewHolder;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -45,10 +49,11 @@ import java.util.Objects;
 public class MainFragment extends Fragment implements DatePickerDialog.OnDateSetListener {
 
     public NavController navController;
-    private Button next_btn, date;
+    private Button next_btn, dateBtn;
     private Spinner dep, sem, lec;
     public String semester, department, lecture, ajkidate;
-    public Date ajkadate;
+    public Date dateD;
+    public Long dateLong;
 
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
     FirebaseUser mUser = mAuth.getCurrentUser();
@@ -77,13 +82,23 @@ public class MainFragment extends Fragment implements DatePickerDialog.OnDateSet
         DatePickerDialog datePickerDialog = new DatePickerDialog(Objects.requireNonNull(getContext()), this, calendar.get(Calendar.YEAR),
                 calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
         datePickerDialog.show();
+
     }
 
     @Override
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
         int m = month + 1;
         ajkidate = dayOfMonth + "-" + m + "-" + year;
-
+        DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
+        dateD = null;
+        try {
+            dateD = (Date) formatter.parse(ajkidate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        dateLong = dateD.getTime();
+        //Snackbar.make(getView(),date.getTime(),5000).show();
+        Toast.makeText(getContext(), Long.toString(dateLong), Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -95,7 +110,7 @@ public class MainFragment extends Fragment implements DatePickerDialog.OnDateSet
         dep = view.findViewById(R.id.spinner);
         sem = view.findViewById(R.id.spinner2);
         lec = view.findViewById(R.id.spinner3);
-        date = view.findViewById(R.id.date);
+        dateBtn = view.findViewById(R.id.date);
 
         ArrayAdapter<CharSequence> semAdapter = ArrayAdapter.createFromResource(getContext(),
                 R.array.Semester, android.R.layout.simple_spinner_item);
@@ -142,7 +157,7 @@ public class MainFragment extends Fragment implements DatePickerDialog.OnDateSet
             }
         });
 
-        date.setOnClickListener(new View.OnClickListener() {
+        dateBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 showDatePickerDialog();
@@ -156,7 +171,8 @@ public class MainFragment extends Fragment implements DatePickerDialog.OnDateSet
                 args.putString("Department", department);
                 args.putString("Semester", semester);
                 args.putString("Lecture", lecture);
-                args.putString("Date", ajkidate);
+                args.putLong("Date", dateLong);
+                //args.putString("Date", ajkidate);
                 navController.navigate(R.id.action_mainFragment_to_attendanceListFragment, args);
             }
         });

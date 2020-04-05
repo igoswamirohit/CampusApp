@@ -24,8 +24,12 @@ import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.ruds.data.R;
 import com.ruds.data.models.AttendanceStd;
 import com.ruds.data.models.Students;
@@ -33,6 +37,10 @@ import com.ruds.data.viewholder.AttendanceViewHolderStd;
 import com.ruds.data.viewholder.StudentsViewHolder;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 public class AttendanceStdPartFragment extends Fragment {
 
@@ -61,6 +69,32 @@ public class AttendanceStdPartFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         navController = Navigation.findNavController(view);
         showList();
+
+
+        Query query = database.getReference("Attendance/CSE/Sem1").orderByKey().startAt("1586025000000").endAt("1586370600000");
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    Log.d("TAG", "Data exists within dates");
+                    for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                        Log.d("TAG", "Data are " + ds.getValue().toString());
+                        AttendanceStd astd = new AttendanceStd();
+                        //Map<String,Object> newHash = astd.getLecture1();
+                        //Toast.makeText(getContext(), Collections.singletonList(newHash).toString(), Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Log.d("TAG", "Data does not exist within dates");
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+
     }
 
     @Override
@@ -90,18 +124,20 @@ public class AttendanceStdPartFragment extends Fragment {
     }
 
     private void showList() {
-        FirebaseRecyclerOptions options = new FirebaseRecyclerOptions.Builder<AttendanceStd>().setQuery(database.getReference("Attendance/CSE/Sem1/15-3-2020").startAt("15-3-2020"), AttendanceStd.class).build();
+        FirebaseRecyclerOptions options = new FirebaseRecyclerOptions.Builder<AttendanceStd>()
+                .setQuery(database.getReference("Attendance/CSE/Sem1")
+                        , AttendanceStd.class).build();
         adapter = new FirebaseRecyclerAdapter<AttendanceStd, AttendanceViewHolderStd>(options) {
 
             @Override
             public void onViewAttachedToWindow(@NonNull AttendanceViewHolderStd holder) {
-                for (int i = 0; i < count; i++) {
-                    if (holder.checkBox.getText() != "true") {
+               /* for (int i = 0; i < count; i++) {
+                    if (holder.checkBox.getText() != "Rohit") {
                         count--;
                     }
                 }
                 String countString = Integer.toString(count);
-                Toast.makeText(getContext(), countString, Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), countString, Toast.LENGTH_SHORT).show();*/
                 super.onViewAttachedToWindow(holder);
             }
 
