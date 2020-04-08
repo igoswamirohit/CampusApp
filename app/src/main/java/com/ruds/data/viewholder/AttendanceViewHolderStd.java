@@ -19,6 +19,6 @@ public class AttendanceViewHolderStd extends RecyclerView.ViewHolder {
     public AttendanceViewHolderStd(@NonNull View itemView) {
         super(itemView);
         checkBox = itemView.findViewById(R.id.checkBox);
-        tt = (TextView) itemView.findViewById(R.id.tv);
+        //tt = (TextView) itemView.findViewById(R.id.attendancePercentageTV);
     }
 }
