@@ -1,5 +1,6 @@
 package com.ruds.data.LoginSignUpUI;
 
+import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -10,6 +11,7 @@ import androidx.navigation.NavOptions;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.provider.ContactsContract;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -30,7 +32,15 @@ import com.google.android.material.textview.MaterialTextView;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.ruds.data.R;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class SignInFragment extends Fragment {
 
@@ -40,7 +50,7 @@ public class SignInFragment extends Fragment {
     FirebaseUser mUser = mAuth.getCurrentUser();
 
     public TextInputEditText email, password;
-    String Email, Pwd;
+    String Email, Pwd, fullName;
     TextView status;
     public TextInputLayout pwdL, emailL;
 
@@ -85,7 +95,7 @@ public class SignInFragment extends Fragment {
                         Snackbar.make(getView(), "Please verify Email first.", 5000).show();
                         mAuth.signOut();
                     } else {
-                        navController.navigate(R.id.action_signInFragment_to_mainFragment2);
+                        navController.navigate(R.id.action_signInFragment_to_dashboardFragment);
                     }
                 }
             }
@@ -138,7 +148,7 @@ public class SignInFragment extends Fragment {
         emailL = view.findViewById(R.id.emailLayout);
         pwdL = view.findViewById(R.id.pwdLayout);
         if (mUser != null && mUser.isEmailVerified()) {
-            navController.navigate(R.id.action_signInFragment_to_mainFragment2);
+            navController.navigate(R.id.action_signInFragment_to_dashboardFragment);
         }
         view.findViewById(R.id.signUpBtn).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -149,3 +159,4 @@ public class SignInFragment extends Fragment {
     }
 
 }
+

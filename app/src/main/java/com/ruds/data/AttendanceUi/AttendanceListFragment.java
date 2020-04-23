@@ -25,7 +25,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.ruds.data.R;
-import com.ruds.data.models.Students;
+import com.ruds.data.models.StudentsModel;
 import com.ruds.data.viewholder.StudentsViewHolder;
 
 import java.util.ArrayList;
@@ -40,7 +40,7 @@ public class AttendanceListFragment extends Fragment {
     private RecyclerView.Adapter mAdapter;
     private CheckBox checkBox;
     public Long dateLong;
-    FirebaseRecyclerAdapter<Students, StudentsViewHolder> adapter;
+    FirebaseRecyclerAdapter<StudentsModel, StudentsViewHolder> adapter;
     public static ArrayList<String> studentsArrayList = new ArrayList<String>();
     public static ArrayList<String> removedArrayList = new ArrayList<String>();
 
@@ -112,7 +112,7 @@ public class AttendanceListFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 for (String str : studentsArrayList) {
-                    Students std = new Students(str);
+                    StudentsModel std = new StudentsModel(str);
                     databaseReferenceAttendance.child("Attendance").child(department).child(semester).child(ajkidate).child(lecture).child(str).removeValue();
                 }
             }
@@ -128,8 +128,8 @@ public class AttendanceListFragment extends Fragment {
     }
 
     private void showList(String department1, String semester1) {
-        FirebaseRecyclerOptions options = new FirebaseRecyclerOptions.Builder<Students>().setQuery(database.getReference("Students/" + department1 + "/" + semester1), Students.class).build();
-        adapter = new FirebaseRecyclerAdapter<Students, StudentsViewHolder>(options) {
+        FirebaseRecyclerOptions options = new FirebaseRecyclerOptions.Builder<StudentsModel>().setQuery(database.getReference("Students/" + department1 + "/" + semester1), StudentsModel.class).build();
+        adapter = new FirebaseRecyclerAdapter<StudentsModel, StudentsViewHolder>(options) {
 
             @NonNull
             @Override
@@ -140,14 +140,14 @@ public class AttendanceListFragment extends Fragment {
             }
 
             @Override
-            protected void onBindViewHolder(@NonNull final StudentsViewHolder holder, int position, @NonNull Students model) {
+            protected void onBindViewHolder(@NonNull final StudentsViewHolder holder, int position, @NonNull StudentsModel model) {
                 holder.checkBox.setText(model.getName());
                 holder.checkBox.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         //Integer pos = (Integer) holder.checkBox.getTag();
                         //Toast.makeText(getBaseContext(), imageModelArrayList.get(pos).getAnimal() + " clicked!", Toast.LENGTH_SHORT).show();
-                        Students std = new Students();
+                        StudentsModel std = new StudentsModel();
                         std.setName(holder.checkBox.getText().toString());
                         //String name = (String) holder.checkBox.getText();
                         //Toast.makeText(MainActivity.this, "Checkbox Checked", Toast.LENGTH_SHORT).show();
@@ -178,8 +178,8 @@ public class AttendanceListFragment extends Fragment {
 
                     }
                 });
-
             }
+
         };
         adapter.startListening();
         adapter.notifyDataSetChanged();

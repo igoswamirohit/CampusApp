@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_garph"
-    app:startDestination="@id/attendanceStdPartFragment3">
+    app:startDestination="@id/timeTableStdPart">
     <fragment
         android:id="@+id/mainFragment"
         android:name="com.ruds.data.AttendanceUi.MainFragment"
@@ -19,13 +19,13 @@
         android:label="fragment_sign_in"
         tools:layout="@layout/fragment_sign_in">
         <action
-            android:id="@+id/action_signInFragment_to_mainFragment2"
-            app:destination="@id/mainFragment"
-            app:popUpTo="@id/signInFragment"
-            app:popUpToInclusive="true" />
-        <action
             android:id="@+id/action_signInFragment_to_signUpFragment"
             app:destination="@id/signUpFragment" />
+        <action
+            android:id="@+id/action_signInFragment_to_dashboardFragment"
+            app:destination="@id/dashboardFragment"
+            app:popUpTo="@id/signInFragment"
+            app:popUpToInclusive="true" />
     </fragment>
     <fragment
         android:id="@+id/attendanceListFragment"
@@ -67,7 +67,68 @@
     </fragment>
     <fragment
         android:id="@+id/attendanceStdPartFragment3"
-        android:name="com.ruds.data.AttendanceStdPartFragment"
+        android:name="com.ruds.data.AttendanceUi.AttendanceStdPartFragment"
         android:label="fragment_attendance_std_part"
-        tools:layout="@layout/fragment_attendance_std_part" />
+        tools:layout="@layout/fragment_attendance_std_part">
+        <argument
+            android:name="fullName"
+            android:defaultValue="None" />
+    </fragment>
+    <fragment
+        android:id="@+id/dashboardFragment"
+        android:name="com.ruds.data.DashboardFragment"
+        android:label="fragment_dashboard"
+        tools:layout="@layout/fragment_dashboard">
+        <action
+            android:id="@+id/action_dashboardFragment_to_attendanceStdPartFragment3"
+            app:destination="@id/attendanceStdPartFragment3" />
+        <action
+            android:id="@+id/action_dashboardFragment_to_mainFragment"
+            app:destination="@id/mainFragment" />
+        <action
+            android:id="@+id/action_dashboardFragment_to_uploadCirculars"
+            app:destination="@id/uploadCirculars" />
+        <action
+            android:id="@+id/action_dashboardFragment_to_downloadCirculars"
+            app:destination="@id/downloadCirculars" />
+    </fragment>
+    <fragment
+        android:id="@+id/uploadCirculars"
+        android:name="com.ruds.data.CircularsUi.UploadCirculars"
+        android:label="fragment_upload_circulars"
+        tools:layout="@layout/fragment_upload_circulars" />
+    <fragment
+        android:id="@+id/downloadCirculars"
+        android:name="com.ruds.data.CircularsUi.DownloadCirculars"
+        android:label="fragment_download_circulars"
+        tools:layout="@layout/fragment_download_circulars">
+        <action
+            android:id="@+id/action_downloadCirculars_to_pdfViewer"
+            app:destination="@id/pdfViewer" />
+    </fragment>
+    <fragment
+        android:id="@+id/pdfViewer"
+        android:name="com.ruds.data.PdfViewer"
+        android:label="fragment_pdf_viewer"
+        tools:layout="@layout/fragment_pdf_viewer" />
+    <fragment
+        android:id="@+id/addTimeTable"
+        android:name="com.ruds.data.TimeTableUi.AddTimeTable"
+        android:label="add_time_table_fragment"
+        tools:layout="@layout/add_time_table_fragment" />
+    <fragment
+        android:id="@+id/addSubjectsFragment"
+        android:name="com.ruds.data.SubjectsUI.AddSubjectsFragment"
+        android:label="fragment_add_subjects"
+        tools:layout="@layout/fragment_add_subjects" />
+    <fragment
+        android:id="@+id/listFrgment"
+        android:name="com.ruds.data.ListFrgment"
+        android:label="fragment_list_frgment_list"
+        tools:layout="@layout/fragment_list_frgment_list" />
+    <fragment
+        android:id="@+id/timeTableStdPart"
+        android:name="com.ruds.data.TimeTableUi.TimeTableStdPart"
+        android:label="fragment_time_table_std_part"
+        tools:layout="@layout/fragment_time_table_std_part" />
 </navigation>

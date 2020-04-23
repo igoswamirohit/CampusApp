@@ -1,13 +1,15 @@
-package com.ruds.data;
+package com.ruds.data.AttendanceUi;
 
 import android.app.DatePickerDialog;
 import android.content.IntentFilter;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
@@ -28,6 +30,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.ruds.data.R;
 import com.ruds.data.models.AttendanceStd;
 
 import java.text.DateFormat;
@@ -52,7 +55,8 @@ public class AttendanceStdPartFragment extends Fragment implements DatePickerDia
     ProgressBar progressAttendance;
     public Date dateD;
     public Long startDateLong, endADateLong;
-    String whatItIs;
+    String whatItIs, fullName, startDate, endDate;
+    AttendanceStd attendanceStd;
     FirebaseDatabase database = FirebaseDatabase.getInstance();
 
     public AttendanceStdPartFragment() {
@@ -62,7 +66,11 @@ public class AttendanceStdPartFragment extends Fragment implements DatePickerDia
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        if (getArguments() != null) {
+            fullName = getArguments().getString("fullName");
+        }
+        attendanceStd = new ViewModelProvider(this).get(AttendanceStd.class);
+        setRetainInstance(true);
     }
 
     @Override
@@ -106,6 +114,11 @@ public class AttendanceStdPartFragment extends Fragment implements DatePickerDia
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_attendance_std_part, container, false);
+        /*if(savedInstanceState!=null){
+            String attPer = savedInstanceState.getString("attPercentage");
+            attendancePercentageTv.setVisibility(View.VISIBLE);
+            attendancePercentageTv.setText(attPer + "%");
+        }*/
         btn = view.findViewById(R.id.btn);
         attendancePercentageTv = view.findViewById(R.id.attendancePercentageTV);
         startDateBtn = view.findViewById(R.id.startDatePicker);
@@ -122,7 +135,7 @@ public class AttendanceStdPartFragment extends Fragment implements DatePickerDia
     private void showList() {
         progressAttendance.setVisibility(View.VISIBLE);
         countArray = 0;
-        Query query = database.getReference("Attendance/CSE/Sem1").orderByKey().startAt(Long.toString(startDateLong)).endAt(Long.toString(endADateLong));
+        Query query = database.getReference("Attendance/CSE/Sem1").orderByKey().startAt(attendanceStd.getStartDate()).endAt(attendanceStd.getEndDate());
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -163,7 +176,7 @@ public class AttendanceStdPartFragment extends Fragment implements DatePickerDia
                                     default:
                                         return;
                                 }
-                                if (lectures.child("Rohit").getValue() != null) {
+                                if (lectures.child(fullName).getValue() != null) {
                                     switch (lectures.getKey()) {
                                         case "Lecture1":
                                             att1 += 1;
@@ -192,28 +205,7 @@ public class AttendanceStdPartFragment extends Fragment implements DatePickerDia
                                 Log.d("total lectures", Integer.toString(tot));
                                 Log.d("total Attended Lectures", Integer.toString(att));
                             }
-                            /*Log.d("TAG", "Data are " + ds.getValue().toString());
-                            AttendanceStd asrd = ds.getValue(AttendanceStd.class);
-
-                            Lecture1Map = asrd.getLecture1();
-                            Lecture2Map = asrd.getLecture2();
-                            Lecture3Map = asrd.getLecture3();
-                            Lecture4Map = asrd.getLecture4();
-                            Lecture5Map = asrd.getLecture5();
-                            Lecture6Map = asrd.getLecture6();
-
-                            ar.add(Lecture1Map);
-                            ar.add(Lecture2Map);
-                            ar.add(Lecture3Map);
-                            ar.add(Lecture4Map);
-                            ar.add(Lecture5Map);
-                            ar.add(Lecture6Map);*/
                         }
-                        /*for (Map<String, String> a : ar) {
-                            Set<String> keySet = a.keySet();
-                            listOfKeys = new ArrayList<>(keySet);
-                            for (String key : listOfKeys) {if (key.equals("Rohit")) {countArray++;}}
-                        }*/
                         studentsPrecent = att;
                         totalLecturesTV.setText(Integer.toString(tot));
                         lecturesAttendedTV.setText(Integer.toString(studentsPrecent));
@@ -225,7 +217,8 @@ public class AttendanceStdPartFragment extends Fragment implements DatePickerDia
                             safeOrNotTV.setText("Please make your Attendace upto 75% or more.");
                             safeOrNotTV.setTextColor(Color.RED);
                         }
-                        attendancePercentageTv.setText(Double.toString(attendancePercentage) + "%");
+                        attendanceStd.setAttendancePercentage(Double.toString(attendancePercentage));
+                        attendancePercentageTv.setText(attendanceStd.getAttendancePercentage() + "%");
                         progressAttendance.setVisibility(View.GONE);
                         percentageLayout.setVisibility(View.VISIBLE);
                         Log.d("Percentage dekh", Double.toString(attendancePercentage));
@@ -267,11 +260,13 @@ public class AttendanceStdPartFragment extends Fragment implements DatePickerDia
             e.printStackTrace();
         }
         if (whatItIs == "endDate") {
-            endADateLong = dateD.getTime();
-            Toast.makeText(getActivity(), Long.toString(endADateLong), Toast.LENGTH_SHORT).show();
+            //endADateLong = dateD.getTime();
+            attendanceStd.setEndDate(Long.toString(dateD.getTime()));
+            Toast.makeText(getActivity(), attendanceStd.getEndDate(), Toast.LENGTH_SHORT).show();
         } else if (whatItIs == "startDate") {
-            startDateLong = dateD.getTime();
-            Toast.makeText(getActivity(), Long.toString(startDateLong), Toast.LENGTH_SHORT).show();
+            //startDateLong = dateD.getTime();
+            attendanceStd.setStartDate(Long.toString(dateD.getTime()));
+            Toast.makeText(getActivity(), attendanceStd.getStartDate(), Toast.LENGTH_SHORT).show();
         }
     }
 }

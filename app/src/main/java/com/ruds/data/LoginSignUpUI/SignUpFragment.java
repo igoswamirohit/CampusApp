@@ -8,25 +8,22 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
-import androidx.viewpager2.widget.ViewPager2;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.ruds.data.R;
-import com.ruds.data.models.Students;
+import com.ruds.data.models.StudentsModel;
 
 public class SignUpFragment extends Fragment {
 
     TextView tv;
-    Students studentsViewModel;
+    StudentsModel studentsViewModel;
     public TextInputEditText fullName, enrollNo, sem, dep, degree, contact, gender, email;
     FirebaseDatabase database = FirebaseDatabase.getInstance();
     DatabaseReference databaseReference = database.getReference();
@@ -42,7 +39,7 @@ public class SignUpFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        studentsViewModel = new ViewModelProvider(this).get(Students.class);
+        studentsViewModel = new ViewModelProvider(this).get(StudentsModel.class);
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_sign_up, container, false);
         tv = rootView.findViewById(R.id.textView);
@@ -64,7 +61,7 @@ public class SignUpFragment extends Fragment {
         view.findViewById(R.id.next_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                studentsViewModel.setFullName(fullName.getText().toString());
+                studentsViewModel.setName(fullName.getText().toString());
                 studentsViewModel.setEnroll(enrollNo.getText().toString());
                 studentsViewModel.setContact(contact.getText().toString());
                 studentsViewModel.setEmail(email.getText().toString());

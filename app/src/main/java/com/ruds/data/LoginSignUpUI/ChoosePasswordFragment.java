@@ -31,7 +31,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.ruds.data.R;
-import com.ruds.data.models.Students;
+import com.ruds.data.models.StudentsModel;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -39,7 +39,7 @@ import java.util.Map;
 public class ChoosePasswordFragment extends Fragment {
 
     public NavController navController;
-    Students studentsViewModel;
+    StudentsModel studentsViewModel;
     public TextInputEditText pwd, cnfpwd;
     public TextInputLayout pwdlayout, cnflayout;
     TextView textView;
@@ -75,9 +75,9 @@ public class ChoosePasswordFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_choose_password, container, false);
-        studentsViewModel = new ViewModelProvider(this).get(Students.class);
+        studentsViewModel = new ViewModelProvider(this).get(StudentsModel.class);
         textView = rootView.findViewById(R.id.textView);
-        textView.setText("Welcome " + studentsViewModel.getFullName() + ", Please Choose a Password for your Account.");
+        textView.setText("Welcome " + studentsViewModel.getName() + ", Please Choose a Password for your Account.");
         return rootView;
     }
 
@@ -127,7 +127,7 @@ public class ChoosePasswordFragment extends Fragment {
                     Log.d("ChoosePasswordSuccess", "createUserWithEmail:success");
                     mAuth = FirebaseAuth.getInstance();
                     mUser = mAuth.getCurrentUser();
-                    studentsViewModel.setUid(mUser.getUid());
+                    //studentsViewModel.setUid(mUser.getUid());
                     String uid = mUser.getUid();
                     sendVerificationEmail(uid);
                 }
@@ -187,7 +187,7 @@ public class ChoosePasswordFragment extends Fragment {
                 Log.d("addedtodatabase", "added to database");
             }
         });
-        Map<String, Object> postValues = Students.toMap();
+        Map<String, Object> postValues = StudentsModel.toMap();
         postValues.put("uid", UUID);
         Map<String, Object> childUpdates = new HashMap<>();
         childUpdates.put("/Students/" + studentsViewModel.getDep() + "/" + studentsViewModel.getSem() + "/" + studentsViewModel.getEnroll(), postValues);
